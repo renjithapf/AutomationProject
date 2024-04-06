@@ -1,0 +1,222 @@
+package Seleniumprgms;
+import java.awt.AWTException;
+
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.Duration;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+
+public class AutomationProject {
+	ChromeDriver driver = new ChromeDriver();
+	WebDriverWait wait;
+
+    @BeforeMethod
+    public void setUp() {
+       
+    	
+    	 driver.get("https://arogyasathi.gujarat.gov.in/");
+    	 driver.manage().window().maximize();
+    }
+
+    @Test
+    public void titileverification() throws AWTException, InterruptedException, IOException
+  
+    {
+    	
+   //IMPLICIT WAIT
+    	driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+    	
+   //TITLE VERIFICATION
+    	
+    	String expected="-::-National Health Mission :: Govt. Of Gujarat";
+    	String actual = driver.getTitle();
+    	System.out.println("Actual title is : " +actual);
+    	Assert.assertEquals(actual,expected);
+ 
+		
+   //NO OF LINKS  
+    	
+    	List<WebElement> li =driver.findElements(By.tagName("a"));
+		System.out.println("Total number of links is "+li.size());	
+		
+		
+  //BROKEN LINKS
+		 for (WebElement links : li)
+	        {
+	            String url = links.getAttribute("href");
+	            if (url != null && !url.isEmpty())
+	            {
+	            	 try 
+		                {  
+	                    HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+	                    httpURLConnection.setConnectTimeout(3000);
+	                    httpURLConnection.connect();
+	                    
+	                    if (httpURLConnection.getResponseCode() != 200)
+	                    {
+	                    	System.out.println( url + " - " + httpURLConnection.getResponseMessage() + "-" + "is a broken link");
+	                    }
+		                }
+	                    catch (Exception e)
+		                {
+		                	System.out.println( url + " - " +  "is a broken link");
+		                }
+	            
+	            }
+    }
+//LOGO VERIFICATION
+		 
+		 {
+				boolean logo=driver.findElement(By.xpath("//*[@id=\"wrapper\"]/nav/div/div[1]/a[2]/img")).isDisplayed();
+				
+				if(logo)
+				{
+					System.out.println("Logo is present");
+				}
+				
+				else
+				{
+					System.out.println("Logo is not present");
+				}
+			}
+//FILLING FORM DETAILS		
+		 
+		 driver.findElement(By.xpath("//*[@id=\"wrapper\"]/nav/div/div[3]/ul/li[3]/a")).click();	 
+		 driver.findElement(By.xpath("//*[@id=\"wrapper\"]/nav/div/div[3]/ul/li[3]/ul/li[1]/a")).click();	 
+		 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtFName\"]")).sendKeys("Renji");//Name
+	     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtMName\"]")).sendKeys("Raju");//Fathers Name
+	     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtLName\"]")).sendKeys("Francis");//Surname
+//DATE PICKER
+	     
+	     wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+	     WebElement dob = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@type='date']")));
+	     ((JavascriptExecutor) driver).executeScript("arguments[0].setAttribute('value', '1999-03-30')", dob);     
+	     
+//	     
+	     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_ddlNationality\"]")).click();	 
+		 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_rbtnGender_1\"]")).click();
+		 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_rbt_disability_1\"]")).click(); 
+		 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_rbt_disability_1\"]")).sendKeys("0");
+		 Thread.sleep(2000);
+		 
+//DROPDOWN
+		 WebElement nationality = driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_ddlCategory\"]"));
+			Select nelement = new Select(nationality);
+			nelement.selectByValue("GENERAL");	
+			Thread.sleep(2000);
+			
+//COPY AND PASTE ( ACTION CLASS )
+			
+			WebElement presentaddress=driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtPresentAddr\"]"));
+			presentaddress.sendKeys("Pannakal House Edapally Ernakulam");
+			Thread.sleep(2000);
+			WebElement permntaddress= driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtPermanentAddr\"]"));
+			Actions act = new  Actions(driver);
+			act.keyDown(presentaddress,Keys.CONTROL).sendKeys("a").keyUp(Keys.CONTROL);
+			act.keyDown(presentaddress,Keys.CONTROL).sendKeys("c").keyUp(Keys.CONTROL);
+			act.keyDown(permntaddress,Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL);
+			act.perform();
+						
+			
+			
+			
+			 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtPinPer\"]")).sendKeys("695326");
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtPinPre\"]")).sendKeys("695326");
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtMobNo\"]")).sendKeys("9632587415");
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtOtherNo\"]")).sendKeys("9632587415");
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtEmailID\"]")).sendKeys("abc@gmail.com");
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtAlterEmail\"]")).sendKeys("abc@gmail.com");
+		     Thread.sleep(1000);
+//FILE UPLOAD
+		     WebElement photo = driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_FileUpload_image\"]")); 
+		     photo.sendKeys("H:\\Downloads\\Picture.jpg");
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_ctl01\"]/div/div[2]/div[4]/div[1]/label[2]")).click();
+		     Thread.sleep(1000);
+		     WebElement signature = driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_FileUpload_Sign\"]"));      
+		     signature.sendKeys("H:\\Downloads\\sign.jpg");  
+		     driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_ctl01\"]/div/div[2]/div[4]/div[2]/label[2]")).click();
+		     Thread.sleep(1000); 
+		     
+//TEXT INSIDE BUTTON VERIFICATION
+
+		     WebElement r = driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_btnsigndupload\"]"));
+				//r.click();
+				String expt="Upload";
+				String actu=r.getAttribute("value");
+				
+				if(expt.equals(actu))
+				{
+					System.out.println("Test Passed");
+				}
+				else
+				{
+					System.out.println("Test Failed");
+				}
+				
+//SCREENSHOT
+				File s1 =((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+				FileHandler.copy(s1, new File("C:\\Users\\HP\\OneDrive\\Documents\\Screenshots\\image1.png"));
+				
+				
+//SINGLE ELEMENT SCREENSHOT
+				WebElement m=driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_txtPresentAddr\"]")); 
+				File s2 =m.getScreenshotAs(OutputType.FILE);
+				FileUtils.copyFile(s2, new File("C:\\Users\\HP\\OneDrive\\Documents\\Screenshots\\image2.png"));
+				
+				
+				
+				 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_chkDeclare\"]")).click();
+				 driver.findElement(By.xpath("//*[@id=\"ctl00_ContentPlaceHolder1_btnFinalSubmit\"]")).click();
+				 
+//ALERT HANDLING
+				 
+				 Alert a = driver.switchTo().alert();
+					a.accept();
+					
+					driver.findElement(By.xpath("//*[@id=\"wrapper\"]/nav/div/div[2]/ul/li[2]/a")).click();
+//HYPERLINK
+					 
+					 driver.findElement(By.linkText("National Informatics Centre")).click();
+					 Alert b = driver.switchTo().alert();
+						b.accept();
+//NAVIGATE BACK
+						
+						driver.findElement(By.xpath("//*[@id=\"menu-item-3963\"]/a")).click();
+						driver.navigate().back();
+						
+						
+						
+}	     
+		     
+	       	
+}
