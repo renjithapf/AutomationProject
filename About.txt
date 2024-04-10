@@ -1,0 +1,21 @@
+• Website : Arogyasathi
+• Website Link : https://arogyasathi.gujarat.gov.in
+• Project Scope : Automate website functionalities using Selenium WebDriver.
+• This project involved : Creating test scripts in Java to automate repetitive tasks.
+• Utilizing Selenium WebDriver with java to automate the testing process.
+• Writing test scripts to validate various functionalities such as,
+        1)Form submission,
+        2)Title veriﬁcation, 
+        3)Number of links, 
+        4)Broken links, 
+        5)Logo veriﬁcation, 
+        6)Date picker, 
+        7)Drop down,
+        8)Action class, 
+        9)Fle upload,
+        10)Text inside button veriﬁcation,
+        11)Full page screenshot, 
+        12)Single element screenshot,
+        13)Alert Handling 
+        14)Navigation.
+• Technologies Used : Selenium WebDriver, Java.
