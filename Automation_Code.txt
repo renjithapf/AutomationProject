@@ -50,7 +50,7 @@ public class AutomationProject {
     }
 
     @Test
-    public void titileverification() throws AWTException, InterruptedException, IOException
+    public void project() throws AWTException, InterruptedException, IOException
   
     {
     	
